@@ -57,15 +57,29 @@ string_t* string_concat_str(string_t* base, char* str) {
   return concat;
 }
 
-string_t* string_append_str(string_t* base, char* string) {
-  unsigned len = strlen(string);
+string_t* string_append(string_t* base, string_t* string) {
   
-  if(len + base->size >= base->allocated) {
-    base = string_resize(base, len + base->size);
+  if(string->size + base->size >= base->allocated) {
+    unsigned size = base->size;
+    base = string_resize(base, string->size + size);
   }
 
-  strncpy(base->str + base->size, string, len);
-  base->size = base->allocated;
+  char* s = string->str;
+
+  while( (base->str[base->size++] = *s++) );
+
+  return base;
+}
+
+string_t* string_append_str(string_t* base, char* string) {
+  unsigned len = strlen(string);
+
+  if(len + base->size >= base->allocated) {
+    unsigned size = base->size;
+    base = string_resize(base, len + size);
+  }
+
+  while( (base->str[base->size++] = *string++) );
 
   return base;
 }

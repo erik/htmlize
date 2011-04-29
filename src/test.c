@@ -2,18 +2,24 @@
 #include "htmlize.h"
 #include "str.h"
 
-int main(int argc, char** argv) {  
-  string_t* tag = html_tag("p",
-                           ATTRIBUTES( 
-                                      ID("myid, myotherid"),
-                                      CLASS("myclass, myotherclass")),
-                           CONTENT(
-                                   "wat is this",
-                                   HTML_BREAK,
-                                   "I don't know!"));
+int main(int argc, char** argv) {
+  html_auto_free = 1;
+  string_t* html = htmlize(DOCTYPE_XHTML,
+                           HEAD(
+                                html_tag("title",
+                                         ATTRIBUTES(NULL),
+                                         CONTENT("TITLE"))),
+                           BODY(
+                                html_tag("p",
+                                         ATTRIBUTES(NULL),
+                                         CONTENT("PARAGRAPH")),
+                                html_tag("p",
+                                         ATTRIBUTES(NULL),
+                                         CONTENT("PARAGRAPH2"))));
 
-  printf("%s\n", tag->str);
 
-  string_del(tag);
+  printf("%s\n", html->str);
+
+  string_del(html);
   return 0;
 }

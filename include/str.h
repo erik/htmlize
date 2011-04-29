@@ -17,6 +17,8 @@ string_t* string_resize(string_t* str, unsigned size);
 
 string_t* string_concat(string_t* a, string_t* b);
 string_t* string_concat_str(string_t* a, char* str);
+
+string_t* string_append(string_t* base, string_t* str);
 string_t* string_append_str(string_t* base, char* str);
 
 #endif /* _STR_H_ */
