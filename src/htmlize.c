@@ -39,20 +39,25 @@ string_t* htmlize(char* doctype, string_t* head[], string_t* body[]) {
   return string;
 }
 
-string_t* html_tag(char* tag, char* attrs[], char* content[]) { 
+string_t* html_tag(char* tag, char* attrs[], char* content[], int selfClose) { 
   string_t* tag_string = string_new2("<");
   tag_string = string_append_str(tag_string, tag);
 
   char* attr;
-  while(*attrs && (attr = *attrs++)) {
+  while((attr = *attrs++)) {
     tag_string = string_append_str(tag_string, " ");
     tag_string = string_append_str(tag_string, attr);
+  }
+
+  if(selfClose) {
+    tag_string = string_append_str(tag_string, " />");
+    return tag_string;
   }
 
   tag_string = string_append_str(tag_string, ">");    
 
   char* elem;
-  while(*content && (elem = *content++)) {
+  while((elem = *content++)) {
     tag_string = string_append_str(tag_string, elem);
   }
 
