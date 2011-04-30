@@ -62,3 +62,33 @@ string_t* html_tag(char* tag, char* attrs[], char* content[]) {
   
   return tag_string;
 }
+
+string_t* html_escape(char* text) {
+  string_t* string = string_new(NULL, 2);
+
+  unsigned i = 0;
+  char c;
+  while((c = text[i++])) {
+    switch(c) {
+    case '"':
+      string = string_append_str(string, "&quot;");
+      break;
+    case '<':
+      string = string_append_str(string, "&lt;");
+      break;
+    case '>':
+      string = string_append_str(string, "&gt;");
+      break;
+    case '&':
+      string = string_append_str(string, "&amp;");
+      break;
+    default: {
+      char tmp[] = { c, '\0' };
+      string = string_append_str(string, tmp);
+      break;
+    }
+    }
+  }
+
+  return string;
+}

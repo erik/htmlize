@@ -12,12 +12,8 @@ int main(int argc, char** argv) {
                            BODY(
                                 html_tag("p",
                                          ATTRIBUTES(NULL),
-                                         CONTENT("PARAGRAPH")),
-                                html_tag("p",
-                                         ATTRIBUTES(NULL),
-                                         CONTENT("PARAGRAPH2"))));
-
-
+                                         CONTENT("PARAGRAPH"))));
+  
   printf("%s\n", html->str);
 
   string_del(html);
