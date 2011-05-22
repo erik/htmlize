@@ -10,7 +10,7 @@ int main(int argc, char** argv) {
   HTMLElement e = html_elem_new("p", 0);
   html_elem_add_attr(&e, "class=myclass");
   html_elem_add_attr(&e, "id=myid");
-  html_elem_set_content(&e, "this is a paragraph");
+  html_elem_add_content(&e, "this is a paragraph");
 
   html_doc_add_body_elem(&doc, e);
 
