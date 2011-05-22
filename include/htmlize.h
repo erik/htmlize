@@ -3,52 +3,71 @@
 #ifndef _HTML_H_
 #define _HTML_H_
 
-#include "str.h"
-
-extern char html_auto_free;
-
-#define ATTRIBUTES(...) (char*[]){__VA_ARGS__, NULL}
-#define CONTENT(...)    (char*[]){__VA_ARGS__, NULL}
-
-#define HEAD(...)       (string_t*[]){__VA_ARGS__, NULL}
-#define BODY(...)       (string_t*[]){__VA_ARGS__, NULL}
-
-#define ID(name) ("id=" #name )
-#define CLASS(name) ("class=" #name)
-
 #define HTML_BREAK "<br />"
-
 #define DOCTYPE_HTML5 "<!DOCTYPE html>\n<html>"
 #define DOCTYPE_XHTML "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"" \
   "\n\t\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"          \
   "\n<html xmlns=\"http://www.w3.org/1999/xhtml\">"
 
+typedef enum doctype { 
+  DOC_HTML4,
+  DOC_HTML5,
+  DOC_XHTML
+} doctype;
 
-/**
- * Converts a series of tags to HTML. First argument is the DOCTYPE of the
- * HTML, second element is a NULL terminated string_t*[] containing all the tags
- * in <head>, and body is a NULL terminated string_t*[] containing all the tags
- * in <body>.
- *
- * If html_auto_free is set to 1, then each of the tags passes to htmlize will
- * automatically be freed, so temporary variables do not need to be used to
- * avoid leaking memory
- */
-string_t* htmlize(char* doctype, string_t* head[], string_t* body[]);
+typedef enum element_flags {
+  ELEMENT_SELF_CLOSE = 1 << 0,
+  ELEMENT_NULL_TAG   = 1 << 1,
+  ELEMENT_AUTO_FREE  = 1 << 2
+} element_flags;
 
-/**
- * Generates a string representation of an HTML tag, with the given tagname.
- * Attrs is a NULL terminated char*[] containing all the attributes of the
- * tag (id, class, and whatever other attributes are necessary). Content is
- * a NULL terminated char*[] that contains all the content that will be placed
- * inside of the tag. <tag>CONTENT</tag>. Self close determines whether the tag
- * will close itself: <tag />, or not: <tag></tag>
- */
-string_t* html_tag(char* tagname, char* attrs[], char* content[], int selfClose);
+typedef struct HTMLElement {
+  char* tag;
+
+  char** attributes;
+  unsigned num_attrs;
+
+  char* content_str;
+
+  struct HTMLElement* content;
+  unsigned num_content;
+
+  element_flags flags;
+} HTMLElement;
+
+typedef struct HTMLDocument {
+  doctype type;
+  
+  unsigned num_head;
+  HTMLElement* head_elems;
+
+  unsigned num_body;
+  HTMLElement* body_elems;
+
+} HTMLDocument;
+
+
+/* HTMLDocument functions */
+HTMLDocument html_doc_new(doctype doc);
+void html_doc_destroy(HTMLDocument* doc);
+void html_doc_set_doctype(HTMLDocument* doc, doctype type);
+void html_doc_set_title(HTMLDocument* doc, char* title);
+void html_doc_add_head_elem(HTMLDocument* doc, HTMLElement elem);
+void html_doc_add_body_elem(HTMLDocument* doc, HTMLElement elem);
+char* html_doc_create(HTMLDocument* doc, unsigned* sizeptr);
+
+/* HTMLElement functions */
+HTMLElement html_elem_new(char* tag, element_flags flags);
+void html_elem_destroy(HTMLElement* elem);
+void html_elem_add_attr(HTMLElement* elem, char* attr);
+void html_elem_add_elem(HTMLElement* elem, HTMLElement inner);
+void html_elem_add_content(HTMLElement* elem, char* content);
+void html_elem_set_content(HTMLElement* elem, char* content);
+char* html_elem_create(HTMLElement* elem, unsigned* sizeptr);
 
 /**
  * Returns an HTML-escaped representation of a given char* of text.
  */
-string_t* html_escape(char* text);
+char* html_escape(char* raw, unsigned* sizeptr);
 
 #endif /* _HTML_H_ */
