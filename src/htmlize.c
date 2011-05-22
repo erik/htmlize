@@ -133,6 +133,11 @@ void html_elem_destroy(HTMLElement* elem) {
 
   free(elem->attributes);
   free(elem->content);
+
+  if(elem->content_str) {
+    free(elem->content_str);
+  }
+
 }
 
 void html_elem_add_attr(HTMLElement* elem, char* attr) {
@@ -147,13 +152,15 @@ void html_elem_add_elem(HTMLElement* elem, HTMLElement inner) {
 
 void html_elem_add_content(HTMLElement* elem, char* content) {
   HTMLElement e = html_elem_new(NULL, ELEMENT_NULL_TAG | ELEMENT_AUTO_FREE);
-  e.content_str = content;
-  
-  html_elem_add_elem(elem, e);  
+
+  html_elem_set_content(&e, content);
+  html_elem_add_elem(elem, e);
 }
 
 void html_elem_set_content(HTMLElement* elem, char* content) {
-  elem->content_str = content;
+  unsigned size = strlen(content);
+  elem->content_str = malloc(size + 1);
+  strcpy(elem->content_str, content);
 }
 
 char* html_elem_create(HTMLElement* elem, unsigned* sizeptr) {
