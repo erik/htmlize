@@ -27,8 +27,8 @@ void string_del(string_t* string) {
 }
 
 string_t* string_resize(string_t* string, unsigned size) {
-  string->str = realloc(string->str, size + 1);
-  
+  string->str = realloc(string->str, size);
+  string->allocated = size;
   return string;
 }
 
@@ -50,12 +50,11 @@ string_t* string_append_str(string_t* base, char* string) {
 
   if(len + base->size >= base->allocated) {
     unsigned size = base->size;
-    base = string_resize(base, len + size);
+    base = string_resize(base, len + size + 10);
   }
 
-  unsigned size = strlen(string);
-  memcpy(base->str + base->size, string, size);
-  base->size = base->size + size;
+  strcpy(base->str + base->size, string);
+  base->size = base->size + len;
 
   return base;
 }
