@@ -44,7 +44,7 @@ void html_doc_add_body_elem(HTMLDocument* doc, HTMLElement elem)  {
 }
 
 char* html_doc_create(HTMLDocument* doc, unsigned* sizeptr) {
-  string_t* string = string_new2("");
+  string_t* string = string_new(NULL, 200);
 
   switch(doc->type) {
   case DOC_HTML4:
@@ -164,7 +164,7 @@ void html_elem_set_content(HTMLElement* elem, char* content) {
 }
 
 char* html_elem_create(HTMLElement* elem, unsigned* sizeptr) {
-  string_t* string = string_new2("");
+  string_t* string = string_new(NULL, 50);
 
   if(!(elem->flags & ELEMENT_NULL_TAG)) {
     string = string_append_str(string, "<");
@@ -223,7 +223,7 @@ char* html_elem_create(HTMLElement* elem, unsigned* sizeptr) {
 
 
 char* html_escape(char* text, unsigned* sizeptr) {
-  string_t* string = string_new2("");
+  string_t* string = string_new(NULL, strlen(text));
 
   unsigned i = 0;
   char c;
