@@ -16,7 +16,7 @@ contains a usage example which shows the basic idea, and `include/htmlize.h` has
 the actual documentation for the library. Using it is pretty straight-forward
 however:
 
-```C
+```c
 /* create a new HTML <div> element */
 unsigned flags = 0;
 HTMLElement div = html_elem_new("div", flags);
@@ -55,6 +55,7 @@ html_doc_destroy(&doc);
 ```
 
 This will output:
+
 ```html
 <!doctype html>
 <html>
